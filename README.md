@@ -1,90 +1,158 @@
-# 1Acc邮箱获取工具
+# 📬 Microsoft Email Retrieva
 
-**核心语言与技术：JavaScript (Node.js), HTML5, CSS3**
+> 一个极简专业的 Microsoft 1Acc 邮箱获取与管理工具
 
-一个极简专业的 1Acc 邮箱获取和管理工具，支持收件箱和垃圾邮件列表查看、批量删除等功能。
+[![Node.js](https://img.shields.io/badge/Node.js-18+-339933?style=flat-square&logo=node.js&logoColor=white)](https://nodejs.org/)
+[![License](https://img.shields.io/badge/License-MIT-blue?style=flat-square)](LICENSE)
+[![Platform](https://img.shields.io/badge/Platform-Linux%20%7C%20Docker-lightgrey?style=flat-square)]()
 
-## 功能特点
+---
 
-- **极简设计**：提供流畅的用户体验。
-- **令牌刷新**：自动利用 `refresh_token` 换取 `access_token`，无需手动干预。
-- **邮件管理**：支持查看收件箱和垃圾邮件，支持单选或批量删除邮件。
-- **响应式布局**：完美适配桌面端和移动端设备。
-- **隐私安全**：除必要的邮箱信息外，不存储任何用户信息，令牌仅在内存中使用。
+## ✨ 功能特点
 
-## 快速开始
+- **令牌自动刷新** — 使用 `refresh_token` 自动换取 `access_token`，无需手动干预
+- **邮件管理** — 支持查看收件箱与垃圾邮件，单选或批量删除
+- **响应式布局** — 完美适配桌面端与移动端
+- **隐私安全** — 令牌仅在内存中使用，不持久化任何敏感信息
+- **极简设计** — 清爽 UI，流畅操作体验
 
-### 1. 环境准备
+---
 
-确保您的系统中已安装 [Node.js](https://nodejs.org/)。
+## 🚀 快速开始
 
-### 2. 安装依赖
+### 方式一：本地运行
 
-在项目根目录下运行以下命令安装所需依赖：
+**环境要求**：Node.js 16+
 
 ```bash
+# 克隆项目
+git clone https://github.com/AlexVera0/Microsoft-Email-retrieva.git
+cd Microsoft-Email-retrieva
+
+# 安装依赖
 npm install
-```
 
-### 3. 运行后端服务
-
-启动极简后端：
-
-```bash
+# 启动服务
 node api.js
 ```
 
-服务器默认运行在 `http://localhost:3001`。
+访问 `http://localhost:3001`
 
-### 4. 访问应用
+---
 
-打开浏览器，访问 `http://服务器IP:3001`。
+### 方式二：Docker 部署（推荐）
 
-## 关于作者
+**1. 在项目根目录创建 `Dockerfile`**
 
-- **名字**：AlexVera
-- **GitHub**：[https://github.com/AlexVera0](https://github.com/AlexVera0)
+```dockerfile
+FROM node:18-alpine
+WORKDIR /app
+COPY package*.json ./
+RUN npm install --production
+COPY . .
+EXPOSE 3001
+CMD ["node", "api.js"]
+```
 
-## 服务器部署建议
+**2. 构建并运行**
 
-如果您计划在 Linux 服务器（如 Ubuntu/CentOS）上部署，请参考以下步骤：
+```bash
+docker build -t ms-email .
 
-### 1. 安装 Node.js
-推荐使用 Node.js 16.x 或更高版本。
+docker run -d \
+  --name ms-email \
+  --restart unless-stopped \
+  -p 33001:3001 \
+  ms-email
+```
 
-### 2. 使用 PM2 进行守护进程管理
-为了确保服务器在关掉终端后继续运行，建议使用 PM2：
+访问 `http://服务器IP:33001`
+
+---
+
+### 方式三：Docker Compose
+
+创建 `docker-compose.yml`：
+
+```yaml
+services:
+  ms-email:
+    build: .
+    container_name: ms-email
+    restart: unless-stopped
+    ports:
+      - "33001:3001"
+```
+
+```bash
+docker compose up -d
+```
+
+---
+
+### 方式四：PM2 守护进程（Linux 服务器）
+
 ```bash
 # 安装 PM2
 npm install -g pm2
 
 # 启动服务
-pm2 start api.js --name "1acc-email"
+pm2 start api.js --name "ms-email"
 
-# 设置开机自启
-pm2 save
-pm2 startup
+# 开机自启
+pm2 save && pm2 startup
 ```
 
-### 3. 防火墙配置
-请确保您的服务器防火墙（或云控制台安全组）已开放 **3001** 端口：
-- **TCP** 协议
-- 端口范围：**3001**
-- 授权对象：**0.0.0.0/0** (或指定 IP)
+---
 
-### 5. 使用说明
+## 📖 使用说明
 
-- **输入邮箱信息**：在顶部搜索栏粘贴邮箱信息，格式为 `邮箱----密码----ClientID----RefreshToken`。
-- **读取邮件**：点击“点击收件”按钮开始同步。
-- **切换文件夹**：在左侧边栏切换“收件箱”和“垃圾邮件”。
-- **删除邮件**：选择邮件后点击“删除”按钮，或使用批量选择功能进行多选删除。
+1. **粘贴邮箱信息** — 在顶部输入框中按以下格式填入：
+   ```
+   邮箱----密码----ClientID----RefreshToken
+   ```
 
-## 技术栈
+2. **收取邮件** — 点击「点击收件」按钮开始同步
 
-- **前端**：HTML5, CSS3 (Vanilla), JavaScript (ES6+)
-- **后端**：Node.js, Express, Axios
-- **API**：Microsoft Graph API
+3. **切换文件夹** — 左侧边栏可在「收件箱」与「垃圾邮件」之间切换
 
-## 免责声明
+4. **删除邮件** — 勾选邮件后点击「删除」，支持批量操作
 
-本工具仅用于学习和研究目的，请确保在使用过程中遵守微软的相关服务协议。邮箱信息安全由使用者自行负责。
+---
+
+## 🛠 技术栈
+
+| 层级 | 技术 |
+|------|------|
+| 前端 | HTML5, CSS3, Vanilla JavaScript (ES6+) |
+| 后端 | Node.js, Express, Axios |
+| API  | Microsoft Graph API |
+| 部署 | Docker / PM2 |
+
+---
+
+## 🔧 防火墙配置
+
+确保服务器安全组已放行对应端口：
+
+| 参数 | 值 |
+|------|----|
+| 协议 | TCP |
+| 端口 | `3001`（本地）或自定义外部端口 |
+| 来源 | `0.0.0.0/0` 或指定 IP |
+
+---
+
+## ⚠️ 免责声明
+
+本工具仅用于学习与研究目的，请确保使用过程中遵守 [Microsoft 服务协议](https://www.microsoft.com/servicesagreement)。邮箱信息安全由使用者自行负责。
+
+---
+
+## 👤 作者
+
+**AlexVera** · [GitHub](https://github.com/AlexVera0)
+
+---
+
+<p align="center">MIT License · © 2025 AlexVera</p>
